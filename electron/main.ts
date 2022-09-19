@@ -7,7 +7,7 @@ const NODE_ENV = process.env.NODE_ENV
 function createWindow() {
     // 创建浏览器窗口
     const mainWindow = new BrowserWindow({
-        width: 1280,
+        width: 1440,
         height: 900,
         webPreferences: {
             preload: path.join(__dirname, 'preload.ts')

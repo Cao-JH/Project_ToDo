@@ -23,6 +23,8 @@
     "cross-env": "^7.0.3",
     "electron": "latest",
     "electron-builder": "^23.3.3",
+    "less": "^4.1.3",
+    "less-loader": "^11.0.0",
     "typescript": "^4.6.4",
     "vite": "^3.1.0",
     "vue-tsc": "^0.40.4",
