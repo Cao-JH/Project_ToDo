@@ -1,0 +1,51 @@
+{
+  "name": "pjtodo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "electron/main.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "electron": "wait-on tcp:5173 && cross-env NODE_ENV=development electron .",
+    "electron:serve": "concurrently -k \"npm run dev\" \"npm run electron\"",
+    "electron:build": "vite build && electron-builder"
+  },
+  "dependencies": {
+    "pinia-plugin-persist": "^1.0.0",
+    "vue": "^3.2.37",
+    "vue-router": "^4.1.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.1.0",
+    "concurrently": "^7.4.0",
+    "cross-env": "^7.0.3",
+    "electron": "latest",
+    "electron-builder": "^23.3.3",
+    "typescript": "^4.6.4",
+    "vite": "^3.1.0",
+    "vue-tsc": "^0.40.4",
+    "wait-on": "^6.0.1"
+  },
+  "build": {
+    "appId": "com.pjtodo.your-app",
+    "productName": "ElectronApp",
+    "copyright": "Copyright © 2022 cao-jh",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist_electron"
+    }
+  }
+}

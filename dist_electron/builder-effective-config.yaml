@@ -1,0 +1,16 @@
+directories:
+  output: dist_electron
+  buildResources: assets
+appId: com.pjtodo.your-app
+productName: ElectronApp
+copyright: Copyright © 2021 <your-name>
+mac:
+  category: public.app-category.utilities
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+files:
+  - filter:
+      - dist/**/*
+      - electron/**/*
+electronVersion: 20.1.4
