@@ -1,6 +1,6 @@
 <template>
     <div class="projectContainer">
-        <div class="box">
+        <div class="box" @click="show">
             <div class="time">2022/9/19</div>
             <div class="text">
                 <div class="projectTitle">TESTETS</div>
@@ -51,9 +51,23 @@
             <div class="progress">项目进度: 75%</div>
         </div>
     </div>
+    <template v-if="bol">
+        <Detail @colse-handler="close"></Detail>
+    </template>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import Detail from './Detail.vue'
+let bol = ref(false)
+
+const show = () => {
+    bol.value = true
+}
+
+const close = (val: boolean) => {
+    bol.value = val
+}
 
 </script>
 
