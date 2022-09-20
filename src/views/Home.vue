@@ -1,9 +1,7 @@
 <template>
     <div class="homePage">
         <Header />
-        <div class="homeContainer">
-            <Projects />
-        </div>
+        <Projects />
         <Footer />
     </div>
 </template>
@@ -19,14 +17,7 @@ import Footer from '../components/Footer.vue';
 .homePage {
     display: flex;
     flex-direction: column;
+    align-items: center;
     background-color: #FFFCF2;
-
-    .homeContainer {
-        // border: 1px solid #000;
-        height: calc(100vh - 170px);
-        margin: 0 34px;
-    }
-
-
 }
 </style>

@@ -1,5 +1,5 @@
 // 控制应用生命周期和创建原生浏览器窗口的模组
-const { app, BrowserWindow, Menu } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 // 引入环境
 const NODE_ENV = process.env.NODE_ENV
@@ -10,12 +10,21 @@ function createWindow() {
         width: 1440,
         height: 900,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.ts')
-        }
+            preload: path.join(__dirname, 'preload.ts'),
+            // Use pluginOptions.nodeIntegration, leave this alone
+            // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+            // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+            // contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+            nodeIntegration: true,
+            contextIsolation: false
+        },
+        frame: false,   // 去掉顶部导航  去掉关闭按钮  最大化最小化按钮
     })
 
-    // 关闭菜单栏
-    mainWindow.setMenu(null)
+    // 关于缩小，放大，关闭等操作
+    ipcMain.on('min', e => mainWindow.minimize());
+    ipcMain.on('max', e => mainWindow.maximize());
+    ipcMain.on('close', e => mainWindow.close());
 
     // 加载 index.html
     // mainWindow.loadFile('dist/index.html') // 此处跟electron官网路径不同，需要注意

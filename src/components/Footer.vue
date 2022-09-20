@@ -9,6 +9,6 @@
 <style lang="less" scoped>
 .Footer {
     // border: 1px solid #000;
-    height: 70px;
+    height: 50px;
 }
 </style>

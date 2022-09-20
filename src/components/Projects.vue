@@ -59,8 +59,12 @@
 
 <style lang="less" scoped>
 .projectContainer {
+    // border: 1px solid #000;
     display: flex;
     flex-wrap: wrap;
+    height: calc(100vh - 200px);
+    margin: 0 35px;
+    width: 1350px;
 
     .box {
         height: 300px;
