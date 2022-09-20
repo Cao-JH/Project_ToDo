@@ -1,5 +1,5 @@
 // 控制应用生命周期和创建原生浏览器窗口的模组
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 // 引入环境
 const NODE_ENV = process.env.NODE_ENV
@@ -13,6 +13,9 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.ts')
         }
     })
+
+    // 关闭菜单栏
+    mainWindow.setMenu(null)
 
     // 加载 index.html
     // mainWindow.loadFile('dist/index.html') // 此处跟electron官网路径不同，需要注意
