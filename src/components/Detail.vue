@@ -4,15 +4,35 @@
             <div class="bar"></div>
             <div class="content">
                 <div class="projectTitle">{{list.projectTitle}}</div>
-                <div class="projectContent">
-                    <div class="description">{{list.projectDescription}}</div>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
+                <ul class="projectContent">
+                    <li>
+                        <div class="description">{{list.projectDescription}}</div>
+                        <div class="lists" v-for="item in list.content" :key="item.id">
+                            <div class="listTitle">{{item.listTitle}}</div>
+                            <div v-for="i in item.listContent" :key="i.id">
+                                <div class="target">{{i.targetText}}</div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </li>
+                    <li>
+                        <div class="description">{{list.projectDescription}}</div>
+                        <div class="lists" v-for="item in list.content" :key="item.id">
+                            <div class="listTitle">{{item.listTitle}}</div>
+                            <div v-for="i in item.listContent" :key="i.id">
+                                <div class="target">{{i.targetText}}</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="description">{{list.projectDescription}}</div>
+                        <div class="lists" v-for="item in list.content" :key="item.id">
+                            <div class="listTitle">{{item.listTitle}}</div>
+                            <div v-for="i in item.listContent" :key="i.id">
+                                <div class="target">{{i.targetText}}</div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
             <div class="btn">
                 <button @click="$emit('colseHandler')" class="complete">完成</button>
@@ -70,7 +90,7 @@ const list = reactive(
 
     .projectDetail {
         width: 800px;
-        height: 720px;
+        height: 800px;
         background: #CCC5B9;
         border-radius: 20px;
         position: relative;
@@ -78,6 +98,19 @@ const list = reactive(
 
         .bar {
             height: 20px;
+        }
+
+        .content {
+
+            .projectTitle {
+                width: 400px;
+                font-size: 48px;
+                margin: 15px 100px 30px 100px;
+            }
+
+            .projectContent {
+                display: flex;
+            }
         }
 
         .btn {

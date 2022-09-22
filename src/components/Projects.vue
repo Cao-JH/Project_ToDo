@@ -59,10 +59,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Detail from './Detail.vue'
+// 引入ipc
+const { ipcRenderer } = window.require("electron");
+
 let bol = ref(false)
 
 const show = () => {
-    bol.value = true
+    console.log(11111);
+    // bol.value = true
+    ipcRenderer.send('openNewWin')
 }
 
 const close = (val: boolean) => {

@@ -4,6 +4,7 @@ const path = require('path')
 // 引入环境
 const NODE_ENV = process.env.NODE_ENV
 
+// 主窗口函数
 function createWindow() {
     // 创建浏览器窗口
     const mainWindow = new BrowserWindow({
@@ -26,20 +27,38 @@ function createWindow() {
     ipcMain.on('max', e => mainWindow.maximize());
     ipcMain.on('close', e => mainWindow.close());
 
+    const winURL = NODE_ENV === 'development'
+        ? 'http://localhost:5173'
+        : `file://${path.join(__dirname, '../dist/index.html')}`
+
     // 加载 index.html
     // mainWindow.loadFile('dist/index.html') // 此处跟electron官网路径不同，需要注意
-    mainWindow.loadURL(
-        NODE_ENV === 'development'
-            ? 'http://localhost:5173'
-            : `file://${path.join(__dirname, '../dist/index.html')}`
-    );
+    mainWindow.loadURL(winURL);
 
 
     // 打开开发工具
     if (NODE_ENV === "development") {
         mainWindow.webContents.openDevTools()
     }
+
+    // 新窗口函数
+    let newWin
+    function openNewWin() {
+        newWin = new BrowserWindow({
+            width: 800,
+            height: 800,
+            // parent: mainWindow, // 主窗口
+            webPreferences: {
+                nodeIntegration: true
+            }
+        })
+        // loadURL优点坑,还是选择使用path.join方法拼接请求地址
+        newWin.loadURL(path.join(winURL, 'detail'))
+        newWin.on('closed', () => { newWin = null })
+    }
+    ipcMain.on('openNewWin', e => openNewWin())
 }
+
 
 // 这段程序将会在 Electron 结束初始化
 // 和创建浏览器窗口的时候调用
@@ -60,5 +79,5 @@ app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
 
-  // 在这个文件中，你可以包含应用程序剩余的所有部分的代码，
-  // 也可以拆分成几个文件，然后用 require 导入。
+// 在这个文件中，你可以包含应用程序剩余的所有部分的代码，
+// 也可以拆分成几个文件，然后用 require 导入。
