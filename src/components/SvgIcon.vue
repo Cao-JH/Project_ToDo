@@ -1,10 +1,8 @@
 <template>
-    <div>
-        <!-- 第一个用来接收传过来的类名，第二个用来定义默认宽高 -->
-        <svg :class="svgClass">
-            <use :href="name"></use>
-        </svg>
-    </div>
+    <!-- 第一个用来接收传过来的类名，第二个用来定义默认宽高 -->
+    <svg :class="svgClass">
+        <use :href="name"></use>
+    </svg>
 </template>
 
 <script setup lang="ts">

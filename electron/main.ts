@@ -17,15 +17,16 @@ function createWindow() {
             // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
             // contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
             nodeIntegration: true,
+            // 关闭上下文隔离
             contextIsolation: false
         },
         frame: false,   // 去掉顶部导航  去掉关闭按钮  最大化最小化按钮
     })
 
     // 关于缩小，放大，关闭等操作
-    ipcMain.on('min', e => mainWindow.minimize());
-    ipcMain.on('max', e => mainWindow.maximize());
-    ipcMain.on('close', e => mainWindow.close());
+    ipcMain.on('min', () => mainWindow.minimize());
+    ipcMain.on('max', () => mainWindow.maximize());
+    ipcMain.on('close', () => mainWindow.close());
 
     const winURL = NODE_ENV === 'development'
         ? 'http://localhost:5173'
@@ -49,14 +50,16 @@ function createWindow() {
             height: 800,
             // parent: mainWindow, // 主窗口
             webPreferences: {
-                nodeIntegration: true
-            }
+                nodeIntegration: true,
+                contextIsolation: false
+            },
+            // frame: false,   // 去掉顶部导航  去掉关闭按钮  最大化最小化按钮
         })
         // loadURL优点坑,还是选择使用path.join方法拼接请求地址
         newWin.loadURL(path.join(winURL, 'detail'))
         newWin.on('closed', () => { newWin = null })
     }
-    ipcMain.on('openNewWin', e => openNewWin())
+    ipcMain.on('openNewWin', () => openNewWin())
 }
 
 
