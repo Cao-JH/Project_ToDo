@@ -8,158 +8,38 @@
                 <button class="delete">删除</button>
             </div>
         </div>
+        <div class="description">
+            <!-- 模拟textarea，且可以自适应高度 -->
+            <div contenteditable="true" class="textarea" @input="saveText">
+                {{list.projectDescription}}
+            </div>
+        </div>
         <div class="content">
-            <div class="description">{{list.projectDescription}}</div>
-            <ul class="projectContent">
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">
-                            <span>{{item.listTitle}}</span>
-                            <svg-icon className="stowIcon" iconName="up" />
-                        </div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <input type="radio" name="" id="" value="" />
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="lists" v-for="item in list.content" :key="item.id">
-                        <div class="listTitle">{{item.listTitle}}</div>
-                        <div v-for="i in item.listContent" :key="i.id">
-                            <div class="target">{{i.targetText}}</div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
+            <n-collapse v-for="item in list.content" class="contentList">
+                <n-collapse-item :title="item.listTitle" name="1" class="listTitle">
+                    <ul>
+                        <li v-for="i in item.listContent" class="listContent">
+                            <n-radio :value="i.targetText" :checked="i.isOver" name="target">
+                                <span class="targetText">{{i.targetText}}</span>
+                            </n-radio>
+                            <div class="controller">
+                                <button class="targetEdit">编辑</button>
+                                <button class="targetDelete">删除</button>
+                            </div>
+                        </li>
+                        <li class="addContent">
+                            <svg-icon className="addIcon" iconName="add" />
+                        </li>
+                    </ul>
+                    <template #header-extra>
+                        <span>最后修改于</span>&nbsp;
+                        <n-time :time="0" format="MM-dd hh:mm" />
+                    </template>
+                </n-collapse-item>
+            </n-collapse>
+            <div class="addContent">
+                <svg-icon className="addIcon" iconName="add" />
+            </div>
         </div>
 
     </div>
@@ -167,6 +47,7 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue';
+import { NTime, NCollapse, NCollapseItem, NRadio } from 'naive-ui'
 
 
 const list = reactive(
@@ -175,6 +56,36 @@ const list = reactive(
         projectTitle: 'TESTETS', // 项目名称
         projectDescription: 'dnandieufnbsdjklncveon啊我的你骂我里卖弄', // 项目简介
         content: [
+            {
+                id: 1,
+                listTitle: '第一步', // 阶段性目标标题
+                listContent: [
+                    {
+                        id: 1,
+                        targetText: '完成1', // 阶段性目标1
+                        isOver: true
+                    },
+                    {
+                        id: 2,
+                        targetText: '阶段性目标2',
+                        isOver: false
+                    }
+                ]
+            },
+            {
+                id: 1,
+                listTitle: '第一步', // 阶段性目标标题
+                listContent: [
+                    {
+                        id: 1,
+                        targetText: '完成1' // 阶段性目标1
+                    },
+                    {
+                        id: 2,
+                        targetText: '阶段性目标2'
+                    }
+                ]
+            },
             {
                 id: 1,
                 listTitle: '第一步', // 阶段性目标标题
@@ -193,8 +104,14 @@ const list = reactive(
         createTime: '2022/9/20',
         editTime: '2022/9/20', // 默认排序以编辑时间为主
         isShow: true, // 用来控制删除
-    }
+    },
+
 )
+
+const saveText = () => {
+    // 输入内容即可触发事件，可以使用保存方法，还要加节流
+    console.log(1111);
+}
 
 </script>
 
@@ -244,49 +161,85 @@ const list = reactive(
         }
     }
 
+    .description {
+        margin: 20px;
+        border-radius: 5px;
+        line-height: 30px;
+        border: 2px solid #000;
+        padding: 5px 20px;
+
+        .textarea {
+            width: 100%;
+            height: auto;
+            font-size: 16px;
+            padding: 3px;
+            outline: 0;
+            line-height: 24px;
+            padding: 2px;
+            word-wrap: break-word;
+        }
+    }
+
     .content {
         padding: 20px;
         border-radius: 10px;
 
-        .description {
+        .contentList {
             height: auto;
             margin-bottom: 20px;
-        }
 
-        .projectContent {
-            list-style: none;
+            .listTitle {
+                font-size: 14px;
+                padding: 0 15px;
+                border-radius: 15px;
+                line-height: 30px;
+                border: 2px solid #252422;
+                background-color: #EEEEEE;
 
-
-            .lists {
-                margin-bottom: 25px;
-
-                .listTitle {
-                    padding: 0 15px;
-                    background: #252422;
-                    opacity: 0.4;
-                    border-radius: 15px;
+                .listContent {
+                    list-style: none;
+                    margin-bottom: 10px;
                     display: flex;
                     justify-content: space-between;
 
-                    span {
-                        color: #FFFCF2;
-                        font-size: 20px;
-                        line-height: 40px;
+                    .targetText {
+                        border-bottom: 1px solid #252422;
                     }
 
-                }
+                    .controller {
+                        display: flex;
+                        justify-content: space-around;
 
-                .target {
-                    margin: 5px auto;
-                    line-height: 25px;
+                        button {
+                            width: 40px;
+                            height: 28px;
+                            margin: 0 3px;
+                            border-radius: 5px;
+                            border: 2px solid #252422;
+                        }
 
+                        .targetEdit {}
+
+                        .targetDelete {
+                            background-color: #e56b6f;
+
+                        }
+                    }
                 }
             }
-
         }
     }
 
-
+    .addContent {
+        width: 50%;
+        height: 30px;
+        margin: 0 auto;
+        margin-bottom: 10px;
+        list-style: none;
+        border: 1px solid #252422;
+        border-radius: 25px;
+        text-align: center;
+    }
 }
 </style>
 
@@ -294,5 +247,10 @@ const list = reactive(
 .stowIcon {
     width: 35px !important;
     height: 38px;
+}
+
+.addIcon {
+    width: 20px !important;
+    height: 30px;
 }
 </style>

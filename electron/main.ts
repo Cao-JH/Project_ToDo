@@ -3,6 +3,8 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 // 引入环境
 const NODE_ENV = process.env.NODE_ENV
+// 屏蔽掉安全告警
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 // 主窗口函数
 function createWindow() {

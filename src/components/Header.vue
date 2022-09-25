@@ -62,10 +62,6 @@ const controlHandler = (index: number) => {
     height: 150px;
     position: relative;
 
-    .controlIcon {
-        width: 100px;
-    }
-
     .controlBar {
         position: absolute;
         top: 0;
