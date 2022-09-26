@@ -8,10 +8,17 @@
                 <div class="projectDescription">
                     d312scawdawdsadwdsadawwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwdcsacsda234eqdwsd
                 </div>
+                <div class="needTodo">
+                    <span class="todoNum">32 </span>
+                    <span>Need To Do</span>
+                </div>
             </template>
             <template #footer>
                 <div class="time"><span>修改于</span> 2022/9/19</div>
             </template>
+        </n-card>
+        <n-card id="addProject">
+            <svg-icon className="add" iconName="add" />
         </n-card>
     </div>
     <template v-if="bol">
@@ -40,6 +47,19 @@ const close = (val: boolean) => {
 
 </script>
 
+<style>
+#addProject {
+    border: 2px dashed #000;
+    opacity: 0.5;
+}
+
+.add {
+    width: 100% !important;
+    height: 100%;
+    opacity: 0.3;
+}
+</style>
+
 <style lang="less" scoped>
 .projectContainer {
     // border: 1px solid #000;
@@ -57,6 +77,7 @@ const close = (val: boolean) => {
         background: #f5f3f4;
         margin: 0 35px 35px 35px;
         position: relative;
+        cursor: pointer;
 
         .projectTitle {
             font-family: Inter;
@@ -84,8 +105,21 @@ const close = (val: boolean) => {
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
-            -webkit-line-clamp: 6;
+            -webkit-line-clamp: 5;
             -webkit-box-orient: vertical
+        }
+
+        .needTodo {
+            width: 90px;
+            font-size: 12px;
+            position: absolute;
+            bottom: 55px;
+            right: 22px;
+
+            .todoNum {
+                color: #e5383b;
+                font-weight: 600;
+            }
         }
 
         .time {
@@ -99,6 +133,17 @@ const close = (val: boolean) => {
             opacity: 0.7;
             margin-right: 0px;
         }
+    }
+
+    .n-card:hover {
+        box-shadow: #252422 10px 10px;
+        transform: translateX(-5px) translateY(-5px);
+        transition: ease-out 0.4s;
+    }
+
+    .n-card {
+        transform: translateX(5px) translateY(5px);
+        transition: ease-out 0.4s;
     }
 }
 </style>
