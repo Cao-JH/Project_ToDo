@@ -85,8 +85,9 @@ const controlHandler = (index: number) => {
             height: 25px;
             width: 200px;
             margin-right: 20px;
+            // border: 2px solid #0b090a;
             border-radius: 20px;
-            background: #CCC5B9;
+            background: #161a1d;
             opacity: 0.4;
             border: 0;
         }

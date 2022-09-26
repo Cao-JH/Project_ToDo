@@ -52,8 +52,9 @@ const close = (val: boolean) => {
     .n-card {
         height: 300px;
         width: 200px;
+        border: 2px solid #0b090a;
         border-radius: 25px;
-        background: #CCC5B9;
+        background: #f5f3f4;
         margin: 0 35px 35px 35px;
         position: relative;
 

@@ -5,7 +5,7 @@
             <div class="projectTitle">{{list.projectTitle}}</div>
             <div class="btn">
                 <button @click="$emit('colseHandler')" class="complete">完成</button>
-                <button class="delete">删除</button>
+                <button class="delete" @click="ddd">删除</button>
             </div>
         </div>
         <div class="description">
@@ -32,6 +32,7 @@
                         </li>
                     </ul>
                     <template #header-extra>
+                        <button>编辑</button>
                         <span>最后修改于</span>&nbsp;
                         <n-time :time="0" format="MM-dd hh:mm" />
                     </template>
@@ -48,7 +49,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 import { NTime, NCollapse, NCollapseItem, NRadio } from 'naive-ui'
-
+import axios from 'axios';
 
 const list = reactive(
     {
@@ -113,12 +114,22 @@ const saveText = () => {
     console.log(1111);
 }
 
+const ddd = () => {
+    console.log(11122231231);
+
+    axios.get('../../static/content.json').then(response => {
+        console.log(response.data);
+    }, response => {
+        console.log("error");
+    });
+}
+
 </script>
 
 <style lang="less" scoped>
 .projectDetail {
     min-height: 100vh;
-    background: #CCC5B9;
+    background: #d3d3d3;
     border-radius: 20px;
     position: relative;
     border: 2px solid #fff;
@@ -193,14 +204,15 @@ const saveText = () => {
                 padding: 0 15px;
                 border-radius: 15px;
                 line-height: 30px;
-                border: 2px solid #252422;
-                background-color: #EEEEEE;
+                border: 2px solid #0b090a;
+                background-color: #f5f3f4;
 
                 .listContent {
                     list-style: none;
                     margin-bottom: 10px;
                     display: flex;
                     justify-content: space-between;
+                    height: 28px;
 
                     .targetText {
                         border-bottom: 1px solid #252422;
@@ -215,15 +227,23 @@ const saveText = () => {
                             height: 28px;
                             margin: 0 3px;
                             border-radius: 5px;
+                            display: none;
                             border: 2px solid #252422;
                         }
 
-                        .targetEdit {}
+                        .targetEdit {
+                            background-color: #8ecae6;
+                        }
 
                         .targetDelete {
                             background-color: #e56b6f;
-
                         }
+                    }
+                }
+
+                .listContent:hover {
+                    button {
+                        display: block;
                     }
                 }
             }
