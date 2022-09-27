@@ -1,6 +1,6 @@
 <template>
     <div class="projectContainer">
-        <n-card title="" hoverable @click="show" v-for="item in listData">
+        <n-card title="" hoverable v-for="item in listData" :key="item.id" @click="show(item.id)">
             <template #header>
                 <n-ellipsis style="max-width: 150px; font-size: 22px; font-weight: 600;" class="projectTitle">
                     {{item.projectTitle}}
@@ -35,7 +35,7 @@ import { NCard, NEllipsis } from 'naive-ui'
 // 引入api接口
 import { getProjectList } from '@/api/index'
 // 引入type
-import { Project } from '../types/project'
+import { Project } from '@/types/project'
 // 引入ipc通信
 const { ipcRenderer } = window.require("electron");
 
@@ -70,10 +70,9 @@ const listData = ref([] as Project[])
 
 let bol = ref(false)
 
-const show = () => {
-    console.log(11111);
+const show = (id: number) => {
     // bol.value = true
-    ipcRenderer.send('openNewWin')
+    ipcRenderer.send('openNewWin', id)
 }
 
 const close = (val: boolean) => {

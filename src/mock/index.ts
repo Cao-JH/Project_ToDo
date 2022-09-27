@@ -60,3 +60,17 @@ Mock.mock('mock/projects', 'get', () => {
         data: data.projects
     }
 })
+
+// 获取项目内容的接口
+Mock.mock('mock/project/detail', 'post', (option) => {
+    const params = JSON.parse(option.body)
+    // 根据id返回数组的值
+    const result = data.projects.find((e: any) => {
+        return e.id === params.id
+    })
+    return {
+        status: 200,
+        message: '数据获取成功',
+        data: result
+    }
+})

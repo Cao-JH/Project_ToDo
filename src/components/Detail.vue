@@ -15,11 +15,11 @@
             </div>
         </div>
         <div class="content">
-            <n-collapse v-for="item in list.content" class="contentList">
+            <n-collapse v-for="item in list.projectContent" class="contentList">
                 <n-collapse-item :title="item.listTitle" name="1" class="listTitle">
                     <ul>
                         <li v-for="i in item.listContent" class="listContent">
-                            <n-radio :value="i.targetText" :checked="i.isOver" name="target">
+                            <n-radio :value="i.targetText" :checked="i.isShow" name="target">
                                 <span class="targetText">{{i.targetText}}</span>
                             </n-radio>
                             <div class="controller">
@@ -47,83 +47,49 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { onBeforeMount, reactive, ref } from 'vue';
 import { NTime, NCollapse, NCollapseItem, NRadio } from 'naive-ui'
-import axios from 'axios';
+// 引入路由获取query参数
+import { useRoute } from 'vue-router';
+import { getProjectDetail, getProjectList } from '@/api'
+import { Project } from '@/types/project'
 
-const list = reactive(
-    {
-        id: 1,
-        projectTitle: 'TESTETS', // 项目名称
-        projectDescription: 'dnandieufnbsdjklncveon啊我的你骂我里卖弄', // 项目简介
-        content: [
-            {
-                id: 1,
-                listTitle: '第一步', // 阶段性目标标题
-                listContent: [
-                    {
-                        id: 1,
-                        targetText: '完成1', // 阶段性目标1
-                        isOver: true
-                    },
-                    {
-                        id: 2,
-                        targetText: '阶段性目标2',
-                        isOver: false
-                    }
-                ]
-            },
-            {
-                id: 1,
-                listTitle: '第一步', // 阶段性目标标题
-                listContent: [
-                    {
-                        id: 1,
-                        targetText: '完成1', // 阶段性目标1
-                        isOver: true
-                    },
-                    {
-                        id: 2,
-                        targetText: '阶段性目标2',
-                        isOver: true
-                    }
-                ]
-            },
-            {
-                id: 1,
-                listTitle: '第一步', // 阶段性目标标题
-                listContent: [
-                    {
-                        id: 1,
-                        targetText: '完成1', // 阶段性目标1
-                        isOver: true
-                    },
-                    {
-                        id: 2,
-                        targetText: '阶段性目标2',
-                        isOver: true
-                    }
-                ]
-            }
-        ],
-        createTime: '2022/9/20',
-        editTime: '2022/9/20', // 默认排序以编辑时间为主
-        isShow: true, // 用来控制删除
-    },
+// route实例
+const route = useRoute()
 
-)
+const { ipcRenderer } = window.require("electron");
+
+// 获取数据
+const projectDetail = async (data: object) => {
+    const res = await getProjectDetail(data)
+    console.log(res);
+    list.value = res.data
+}
+
+// ceshi
+const getProjectData = async () => {
+    const res = await getProjectList()
+    console.log(res);
+}
+
+onBeforeMount(() => {
+    projectDetail(route.query)
+    getProjectData()
+})
+
+// 定义数据
+const list = ref({} as Project)
 
 const saveText = () => {
     // 输入内容即可触发事件，可以使用保存方法，还要加节流
     console.log(1111);
 }
 
-const ddd = () => {
-    console.log(11122231231);
 
-    axios.get('mock/index').then((res) => {
-        console.log(res, 'res')
-    })
+const ddd = () => {
+    console.log(route.query);
+    projectDetail(route.query)
+
 }
 
 </script>
@@ -147,7 +113,7 @@ const ddd = () => {
 
         .projectTitle {
             width: 400px;
-            font-size: 48px;
+            font-size: 38px;
             margin: 15px 100px;
         }
 

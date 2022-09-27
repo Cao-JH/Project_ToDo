@@ -1,12 +1,12 @@
 // todo列表里的每一个小细节
-interface ListContent {
+export interface ListContent {
     id: number,
     targetText: string,
     isShow: boolean
 }
 
 // 整个todo列表
-interface ProjectContent {
+export interface ProjectContent {
     id: number,
     listTitle: string, // 阶段性目标标题
     listContent: ListContent[],

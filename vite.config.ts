@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
+import path from 'path'
 // 配置SVG
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 // 引入mock
 import { viteMockServe } from "vite-plugin-mock"
-const path = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
