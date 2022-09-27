@@ -1,12 +1,14 @@
 <template>
     <div class="projectContainer">
-        <n-card title="" hoverable @click="show">
+        <n-card title="" hoverable @click="show" v-for="item in listData">
             <template #header>
-                <div class="projectTitle">TESTETS</div>
+                <n-ellipsis style="max-width: 150px; font-size: 22px; font-weight: 600;" class="projectTitle">
+                    {{item.projectTitle}}
+                </n-ellipsis>
             </template>
             <template #default>
                 <div class="projectDescription">
-                    d312scawdawdsadwdsadawwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwdcsacsda234eqdwsd
+                    {{item.projectDescription}}
                 </div>
                 <div class="needTodo">
                     <span class="todoNum">32 </span>
@@ -14,7 +16,7 @@
                 </div>
             </template>
             <template #footer>
-                <div class="time"><span>修改于</span> 2022/9/19</div>
+                <div class="time"><span>修改于</span> {{item.editTime}}</div>
             </template>
         </n-card>
         <n-card id="addProject">
@@ -27,11 +29,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onBeforeMount, reactive } from 'vue'
 import Detail from './Detail.vue'
-import { NCard } from 'naive-ui'
-// 引入ipc
+import { NCard, NEllipsis } from 'naive-ui'
+// 引入api接口
+import { getProjectList } from '@/api/index'
+// 引入type
+import { Project } from '../types/project'
+// 引入ipc通信
 const { ipcRenderer } = window.require("electron");
+
+// 定义获取数据的方法
+const getProjectData = async () => {
+    const res = await getProjectList()
+    console.log(res);
+    listData.value = res.data
+}
+
+// 内容挂载时
+onBeforeMount(() => {
+    getProjectData()
+})
+
+// 定义数据规则
+/**
+ * vue3 + ts 动态绑定数组
+ * 1. ref
+ *      const listData = ref([] as Project[])
+ *      使用 listData.value 赋值
+ * 2. reactive
+ *      const listData: Project[] = reactive([])
+ *      使用 .push(...data) 赋值
+ * 3. const data = reactive({
+ *        listData: [] as Project[]
+ *     })
+ *      直接赋值
+ */
+// const listData: Project[] = reactive([])
+const listData = ref([] as Project[])
 
 let bol = ref(false)
 
@@ -81,7 +116,7 @@ const close = (val: boolean) => {
 
         .projectTitle {
             font-family: Inter;
-            font-size: 30px;
+            font-size: 24px;
             font-weight: 400;
             line-height: 39px;
             text-align: center;
@@ -90,7 +125,7 @@ const close = (val: boolean) => {
 
         .projectDescription {
             font-family: Inter;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 400;
             line-height: 24px;
             text-align: center;

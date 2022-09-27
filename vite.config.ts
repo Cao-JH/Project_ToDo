@@ -5,6 +5,7 @@ import { resolve } from 'path'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 // 引入mock
 import { viteMockServe } from "vite-plugin-mock"
+const path = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -22,5 +23,12 @@ export default defineConfig({
       supportTs: true     //如果使用 js发开，则需要配置 supportTs 为 false
     })
   ],
-  base: './'
+  // base: './'
+  resolve: {
+    // 设置路径别名
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '*': path.resolve('')
+    }
+  }
 })
