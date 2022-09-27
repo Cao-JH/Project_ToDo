@@ -79,11 +79,13 @@ const list = reactive(
                 listContent: [
                     {
                         id: 1,
-                        targetText: '完成1' // 阶段性目标1
+                        targetText: '完成1', // 阶段性目标1
+                        isOver: true
                     },
                     {
                         id: 2,
-                        targetText: '阶段性目标2'
+                        targetText: '阶段性目标2',
+                        isOver: true
                     }
                 ]
             },
@@ -93,11 +95,13 @@ const list = reactive(
                 listContent: [
                     {
                         id: 1,
-                        targetText: '完成1' // 阶段性目标1
+                        targetText: '完成1', // 阶段性目标1
+                        isOver: true
                     },
                     {
                         id: 2,
-                        targetText: '阶段性目标2'
+                        targetText: '阶段性目标2',
+                        isOver: true
                     }
                 ]
             }
@@ -117,11 +121,9 @@ const saveText = () => {
 const ddd = () => {
     console.log(11122231231);
 
-    axios.get('../../static/content.json').then(response => {
-        console.log(response.data);
-    }, response => {
-        console.log("error");
-    });
+    axios.get('mock/index').then((res) => {
+        console.log(res, 'res')
+    })
 }
 
 </script>
