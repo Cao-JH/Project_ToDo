@@ -8,7 +8,7 @@
                 @click="controlHandler(index)" />
         </div>
         <div class="searchInput">
-            <input type="text">
+            <input type="text" placeholder="搜索功能开发中..">
             <button class="searchBtn">查找</button>
         </div>
     </div>
