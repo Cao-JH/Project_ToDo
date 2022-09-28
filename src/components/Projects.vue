@@ -19,32 +19,50 @@
                 <div class="time"><span>修改于</span> {{item.editTime}}</div>
             </template>
         </n-card>
-        <n-card id="addProject">
+        <n-card id="addProject" @click="openAdd">
             <svg-icon className="add" iconName="add" />
         </n-card>
     </div>
-    <template v-if="bol">
-        <Detail @colse-handler="close"></Detail>
-    </template>
+    <div class="mask" v-show="maskShow">
+        <div class="backmask" @click="closeAdd"></div>
+        <div class="addForm">
+            <div class="addHeader">新增</div>
+            <div class="addBody">
+                <div class="inputBox">
+                    项目名: <input type="text" v-model="addData.projectTitle">
+                </div>
+                <div class="textareaBox" contenteditable="true" @input="saveText($event)">
+
+                </div>
+            </div>
+            <div class="addFooter">
+                <button @click="projectPost">提交</button>
+                <button @click="closeAdd">取消</button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, reactive } from 'vue'
-import Detail from './Detail.vue'
+import { ref, onBeforeMount, reactive, onMounted } from 'vue'
 import { NCard, NEllipsis } from 'naive-ui'
 // 引入api接口
-import { getProjectList } from '@/api/index'
+import { getProjectList, addProject } from '@/api/index'
 // 引入type
 import { Project } from '@/types/project'
+import { computed } from '@vue/reactivity';
+// 引入uuid
+import { v4 } from 'uuid'
 // 引入ipc通信
 const { ipcRenderer } = window.require("electron");
 
 // 定义获取数据的方法
 const getProjectData = async () => {
     const res = await getProjectList()
-    console.log(res);
     listData.value = res.data
+    console.log(listData.value.length);
 }
+
 
 // 内容挂载时
 onBeforeMount(() => {
@@ -68,15 +86,49 @@ onBeforeMount(() => {
 // const listData: Project[] = reactive([])
 const listData = ref([] as Project[])
 
-let bol = ref(false)
+var nowDate = new Date().getTime(); //获取到当前时间戳
+// 定义id值
+let newUuid = v4()
 
+const addData = reactive<Project>({
+    id: newUuid.replace(/[-]/g, ''),
+    projectTitle: '', // 项目名称
+    projectDescription: '', // 项目简介
+    projectContent: null,
+    creatTime: nowDate,
+    editTime: nowDate,
+    isShow: true
+})
+
+console.log(addData);
+
+// 输入完时将结果赋值给项目描述
+const saveText = (e: any) => {
+    addData.projectDescription = e.target.innerText
+}
+
+// 打开对应的内容窗口
 const show = (id: number) => {
-    // bol.value = true
     ipcRenderer.send('openNewWin', id)
 }
 
-const close = (val: boolean) => {
-    bol.value = val
+// 添加页控制方法
+let maskShow = ref(false)
+// 打开添加页
+const openAdd = () => {
+    maskShow.value = true
+}
+// 提交内容
+const projectPost = async () => {
+    console.log(addData, 'addData');
+    const res = await addProject(addData)
+    console.log(res, 'res');
+    maskShow.value = false
+    getProjectData()
+}
+// 关闭添加页
+const closeAdd = () => {
+    maskShow.value = false
 }
 
 </script>
@@ -178,6 +230,93 @@ const close = (val: boolean) => {
     .n-card {
         transform: translateX(5px) translateY(5px);
         transition: ease-out 0.4s;
+    }
+}
+
+.mask {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+
+
+    .backmask {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.3);
+        z-index: 1;
+    }
+
+    .addForm {
+        position: absolute;
+        top: calc(50% - 120px);
+        left: calc(50% - 250px);
+        width: 500px;
+        height: 240px;
+        padding: 10px 15px;
+        background-color: #d3d3d3;
+        border-radius: 20px;
+        border: 3px solid #161a1d;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        z-index: 2;
+
+        .addHeader {
+            border-bottom: 1px solid #0b090a;
+        }
+
+        .addBody {
+
+            .inputBox {
+                margin: 12px 50px;
+                width: 375px;
+                text-align: center;
+                font-size: 16px;
+
+                input {
+                    border: 0;
+                    background-color: #d3d3d3;
+                    border-bottom: 2px solid #0b090a;
+                    width: 200px;
+                    font-size: 20px;
+                    padding: 0 5px;
+                    outline: none;
+                }
+            }
+
+            .textareaBox {
+                border: 2px solid #000;
+                border-radius: 5px;
+                padding: 0 5px;
+                margin: 0 50px;
+                outline: none;
+                max-height: 95px;
+                // 暂时使用hidden，后面修改滚轮样式
+                overflow: hidden;
+            }
+        }
+
+        .addFooter {
+            text-align: center;
+
+            button {
+                width: 50px;
+                height: 30px;
+                margin: 0 10px;
+                font-size: 14px;
+                border: 2px solid #000;
+                border-radius: 5px;
+            }
+
+            button:nth-child(1) {
+                background-color: #84a98c;
+            }
+
+            button:nth-child(2) {
+                background-color: #e56b6f;
+            }
+        }
     }
 }
 </style>

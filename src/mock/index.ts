@@ -74,3 +74,18 @@ Mock.mock('mock/project/detail', 'post', (option) => {
         data: result
     }
 })
+
+// 增加项目的接口
+Mock.mock('mock/addproject', 'post', (options) => {
+    const params = JSON.parse(options.body)
+    console.log(params);
+    // 添加新的内容
+    data.projects.unshift(
+        Mock.mock(params)
+    )
+    return {
+        code: 200,
+        success: true,
+        message: '用户添加成功'
+    }
+})

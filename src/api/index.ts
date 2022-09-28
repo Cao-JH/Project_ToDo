@@ -11,3 +11,8 @@ export const getProjectDetail = async (data: object) => {
     const res = await axios.post('mock/project/detail', data)
     return res.data
 }
+
+// 新增项目
+export const addProject = (data: any) => {
+    return axios.post('mock/addproject', data)
+}

@@ -9,18 +9,18 @@ export interface ListContent {
 export interface ProjectContent {
     id: number,
     listTitle: string, // 阶段性目标标题
-    listContent: ListContent[],
+    listContent: ListContent[] | null,
     isShow: boolean,
-    createTime: string,
+    createTime: number,
 }
 
 // 一个项目
 export interface Project {
     id: number,
     projectTitle: string, // 项目名称
-    projectDescription: string, // 项目简介
-    projectContent: ProjectContent[],
-    creatTime: string,
-    editTime: string,
+    projectDescription: string | null, // 项目简介
+    projectContent: ProjectContent[] | null,
+    creatTime: number,
+    editTime: number,
     isShow: boolean
 }
