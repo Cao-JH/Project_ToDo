@@ -38,12 +38,7 @@
                 </div>
             </div>
             <div class="addFooter">
-                <n-popconfirm :show-icon="false" positive-text="好的" :negative-text="null">
-                    <template #trigger>
-                        <button @click="projectPost">提交</button>
-                    </template>
-                    账号不能为空
-                </n-popconfirm>
+                <button @click="projectPost">提交</button>
                 <button @click="closeAdd">取消</button>
             </div>
         </div>
@@ -52,7 +47,7 @@
 
 <script setup lang="ts">
 import { ref, onBeforeMount, reactive } from 'vue'
-import { NCard, NEllipsis, NTime, NPopconfirm, NButton } from 'naive-ui'
+import { NCard, NEllipsis, NTime } from 'naive-ui'
 // 引入type
 import { Project } from '@/types/project'
 // 引入uuid
@@ -104,7 +99,7 @@ const addData = reactive<Project>({
     id: newUuid.replace(/[-]/g, ''),
     projectTitle: '', // 项目名称
     projectDescription: '', // 项目简介
-    projectContent: null,
+    projectContent: [],
     creatTime: nowDate,
     editTime: nowDate,
     isShow: true
@@ -140,11 +135,11 @@ const projectPost = () => {
             // 将内容存入数组
             result = [...result, addData]
             console.log(result);
-            // localStorage.setItem('projects', JSON.stringify(result))
+            localStorage.setItem('projects', JSON.stringify(result))
         }
+        getProjectData()
         addData.projectTitle = '';// 项目名称置空
         addData.projectDescription = ''; // 项目简介置空
-        getProjectData()
         maskShow.value = false
     }
 }

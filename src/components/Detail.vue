@@ -27,7 +27,7 @@
                                 <button class="targetDelete">删除</button>
                             </div>
                         </li>
-                        <li class="addContent">
+                        <li class="addContent" @click="maskShowList = false ? false : true ">
                             <svg-icon className="addIcon" iconName="add" />
                         </li>
                     </ul>
@@ -38,53 +38,37 @@
                     </template>
                 </n-collapse-item>
             </n-collapse>
-            <div class="addContent">
-                <svg-icon className="addIcon" iconName="add" @click="addListContent" />
+            <div class="addContent" @click="maskShowContent = false ? false : true ">
+                <svg-icon className="addIcon" iconName="add" />
             </div>
         </div>
     </div>
-    <div class="mask" v-show="maskShow">
+    <div class="mask" v-show="maskShowContent">
         <div class="backmask" @click="closeAdd"></div>
         <div class="addForm">
-            <div class="addHeader">新增</div>
+            <div class="addHeader">定个小目标</div>
             <div class="addBody">
                 <div class="inputBox">
-                    项目名: <input type="text" v-model="addData.projectTitle">
-                </div>
-                <div class="textareaBox" contenteditable="true" @input="saveText($event)">
-
+                    <input type="text" v-model="projectContent.listTitle">
                 </div>
             </div>
             <div class="addFooter">
-                <n-popconfirm :show-icon="false" positive-text="好的" :negative-text="null">
-                    <template #trigger>
-                        <button @click="projectPost">提交</button>
-                    </template>
-                    账号不能为空
-                </n-popconfirm>
+                <button @click="addListContent">提交</button>
                 <button @click="closeAdd">取消</button>
             </div>
         </div>
     </div>
-    <div class="mask" v-show="maskShow">
+    <div class="mask" v-show="maskShowList">
         <div class="backmask" @click="closeAdd"></div>
         <div class="addForm">
             <div class="addHeader">新增</div>
             <div class="addBody">
                 <div class="inputBox">
-                    项目名: <input type="text" v-model="addData.projectTitle">
-                </div>
-                <div class="textareaBox" contenteditable="true" @input="saveText($event)">
-
+                    再定个小小目标: <input type="text" v-model="ListContent.targetText">
                 </div>
             </div>
             <div class="addFooter">
-                <n-popconfirm :show-icon="false" positive-text="好的" :negative-text="null">
-                    <template #trigger>
-                        <button @click="projectPost">提交</button>
-                    </template>
-                    账号不能为空
-                </n-popconfirm>
+                <button @click="">提交</button>
                 <button @click="closeAdd">取消</button>
             </div>
         </div>
@@ -97,6 +81,8 @@ import { NTime, NCollapse, NCollapseItem, NRadio } from 'naive-ui'
 // 引入路由获取query参数
 import { useRoute } from 'vue-router';
 import { Project, ProjectContent, ListContent } from '@/types/project'
+import { v4 } from 'uuid'
+
 
 // route实例
 const route = useRoute()
@@ -117,11 +103,6 @@ const projectDetail = (data: object) => {
     }
 }
 
-// ceshi
-const getProjectData = async () => {
-
-}
-
 // 提取query中的id
 var queryId: any
 for (let id in route.query) {
@@ -130,21 +111,77 @@ for (let id in route.query) {
 
 onBeforeMount(() => {
     projectDetail(queryId)
-    getProjectData()
 })
 
+
+let newUuid = v4(); // 定义id值
+const nowDate = new Date().getTime(); //获取到当前时间戳
+
 // 定义数据
-const list = ref({} as Project)
-const projectContent = ref([] as ProjectContent[])
-const ListContent = ref({} as ListContent)
+const list = ref({
+    id: 0,
+    projectTitle: '',
+    projectDescription: '',
+    projectContent: [],
+    creatTime: 0,
+    editTime: 0,
+    isShow: true
+} as Project)
+const projectContent = reactive<ProjectContent>({
+    id: newUuid.replace(/[-]/g, ''),
+    listTitle: '',
+    listContent: [],
+    isShow: true,
+    createTime: nowDate
+})
+const ListContent = reactive<ListContent>({
+    id: newUuid.replace(/[-]/g, ''),
+    targetText: '',
+    isShow: true,
+})
+
+
+console.log(list);
 
 const saveText = () => {
     // 输入内容即可触发事件，可以使用保存方法，还要加节流
     console.log(1111);
 }
 
+// 控制弹出框
+const maskShowContent = ref(false)
+const maskShowList = ref(false)
+
+// 关闭弹出框
+const closeAdd = () => {
+    maskShowContent.value = false
+    maskShowList.value = false
+}
+
 // 添加二级内容
 const addListContent = () => {
+    console.log(1111);
+    console.log(projectContent);
+
+
+    if (projectContent.listTitle != '') { // 标题不能为空
+        let projects = localStorage.getItem('projects')
+        if (projects != null) {
+            const result = JSON.parse(projects)
+            console.log(result);
+            for (let i = 0; i < result.length; i++) {
+                // 找到id对应的内容，赋值
+                if (result[i].id == queryId) {
+                    result[i].projectContent.push(projectContent)
+                    localStorage.setItem('projects', JSON.stringify(result))
+                }
+            }
+        }
+        maskShowContent.value = false
+        projectContent.listTitle = ''
+        projectDetail(queryId)
+    }
+
 }
 
 const ddd = () => {
@@ -159,7 +196,6 @@ const ddd = () => {
     min-height: 100vh;
     background: #d3d3d3;
     border-radius: 20px;
-    position: relative;
     border: 2px solid #fff;
 
     .controlBar {
@@ -292,6 +328,7 @@ const ddd = () => {
 
 .mask {
     position: absolute;
+    top: 0;
     width: 100vw;
     height: 100vh;
 
