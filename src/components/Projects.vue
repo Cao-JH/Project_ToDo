@@ -16,7 +16,9 @@
                 </div>
             </template>
             <template #footer>
-                <div class="time"><span>修改于</span> {{item.editTime}}</div>
+                <div class="time"><span>修改于 </span>
+                    <n-time :time="item.editTime" format="MM-dd hh:mm" />
+                </div>
             </template>
         </n-card>
         <n-card id="addProject" @click="openAdd">
@@ -36,7 +38,12 @@
                 </div>
             </div>
             <div class="addFooter">
-                <button @click="projectPost">提交</button>
+                <n-popconfirm :show-icon="false" positive-text="好的" :negative-text="null">
+                    <template #trigger>
+                        <button @click="projectPost">提交</button>
+                    </template>
+                    账号不能为空
+                </n-popconfirm>
                 <button @click="closeAdd">取消</button>
             </div>
         </div>
@@ -44,25 +51,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, reactive, onMounted } from 'vue'
-import { NCard, NEllipsis } from 'naive-ui'
-// 引入api接口
-import { getProjectList, addProject } from '@/api/index'
+import { ref, onBeforeMount, reactive } from 'vue'
+import { NCard, NEllipsis, NTime, NPopconfirm, NButton } from 'naive-ui'
 // 引入type
 import { Project } from '@/types/project'
-import { computed } from '@vue/reactivity';
 // 引入uuid
 import { v4 } from 'uuid'
 // 引入ipc通信
 const { ipcRenderer } = window.require("electron");
 
 // 定义获取数据的方法
-const getProjectData = async () => {
-    const res = await getProjectList()
-    listData.value = res.data
-    console.log(listData.value.length);
+const getProjectData = () => {
+    // 读取本次存储，判断是否有需要的内容
+    let result = localStorage.getItem('projects')
+    if (result == null) {
+        // 如果没有，则创建一个新的
+        localStorage.setItem('projects', JSON.stringify([] as Project[]))
+    } else {
+        // 反之，提取值
+        console.log(result);
+        listData.value = JSON.parse(result)
+    }
 }
-
 
 // 内容挂载时
 onBeforeMount(() => {
@@ -118,14 +128,27 @@ let maskShow = ref(false)
 const openAdd = () => {
     maskShow.value = true
 }
+
 // 提交内容
-const projectPost = async () => {
+const projectPost = () => {
     console.log(addData, 'addData');
-    const res = await addProject(addData)
-    console.log(res, 'res');
-    maskShow.value = false
-    getProjectData()
+    if (addData.projectTitle != "") {
+        // 获取数组
+        let projects = localStorage.getItem('projects')
+        if (projects != null) {
+            let result = JSON.parse(projects)
+            // 将内容存入数组
+            result = [...result, addData]
+            console.log(result);
+            // localStorage.setItem('projects', JSON.stringify(result))
+        }
+        addData.projectTitle = '';// 项目名称置空
+        addData.projectDescription = ''; // 项目简介置空
+        getProjectData()
+        maskShow.value = false
+    }
 }
+
 // 关闭添加页
 const closeAdd = () => {
     maskShow.value = false

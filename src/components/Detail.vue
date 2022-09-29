@@ -51,7 +51,6 @@ import { onBeforeMount, reactive, ref } from 'vue';
 import { NTime, NCollapse, NCollapseItem, NRadio } from 'naive-ui'
 // 引入路由获取query参数
 import { useRoute } from 'vue-router';
-import { getProjectDetail, getProjectList } from '@/api'
 import { Project } from '@/types/project'
 
 // route实例
@@ -61,15 +60,12 @@ const { ipcRenderer } = window.require("electron");
 
 // 获取数据
 const projectDetail = async (data: object) => {
-    const res = await getProjectDetail(data)
-    console.log(res);
-    list.value = res.data
+
 }
 
 // ceshi
 const getProjectData = async () => {
-    const res = await getProjectList()
-    console.log(res);
+
 }
 
 onBeforeMount(() => {

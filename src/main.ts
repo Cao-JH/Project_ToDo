@@ -6,7 +6,7 @@ import SvgIconVue from './components/SvgIcon.vue'
 // 注册svg
 import 'virtual:svg-icons-register'
 // 引入mock
-import './mock'
+import '../mock'
 
 const app = createApp(App)
 // 注册组件要传两个值，第一个值为使用的标签，第二个值为组件
