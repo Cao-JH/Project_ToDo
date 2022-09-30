@@ -4,7 +4,7 @@
         <div class="header">
             <div class="projectTitle">{{list.projectTitle}}</div>
             <div class="btn">
-                <button @click="$emit('colseHandler')" class="complete">完成</button>
+                <button class="complete" @click="updateAndExit">完成</button>
                 <button class="delete" @click="ddd">删除</button>
             </div>
         </div>
@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="content">
-            <n-collapse v-for="item in list.projectContent" class="contentList">
+            <n-collapse v-for="item in projectContentList" class="contentList">
                 <n-collapse-item :title="item.listTitle" name="1" class="listTitle">
                     <ul>
                         <li v-for="i in item.listContent" class="listContent">
@@ -34,7 +34,7 @@
                     <template #header-extra>
                         <button>编辑</button>
                         <span>最后修改于</span>&nbsp;
-                        <n-time :time="0" format="MM-dd hh:mm" />
+                        <n-time :time="item.createTime" format="MM-dd hh:mm" />
                     </template>
                 </n-collapse-item>
             </n-collapse>
@@ -109,38 +109,21 @@ for (let id in route.query) {
 
 onBeforeMount(() => {
     projectDetail(queryId)
+    projectContentList.value = list.value.projectContent
 })
 
 // 定义数据
-const list = ref({
-    id: '',
-    projectTitle: '',
-    projectDescription: '',
-    projectContent: [],
-    creatTime: 0,
-    editTime: 0,
-    isShow: true
-} as Project)
-const projectContent = reactive<ProjectContent>({
-    id: '',
-    listTitle: '',
-    listContent: [],
-    isShow: true,
-    createTime: 0
-})
-const listContent = reactive<ListContent>({
-    id: '',
-    targetText: '',
-    isShow: true,
-})
+const list = ref({} as Project)
+const projectContent = reactive({} as ProjectContent)
+const listContent = reactive({} as ListContent)
+// 这两个数组用来存放临时内容
+const projectContentList = ref([] as ProjectContent[])
 
+// 描述部分
 const saveText = (e: any) => {
     // 输入内容即可触发事件，可以使用保存方法，还要加节流
     list.value.projectDescription = e.target.innerText
 }
-
-console.log(list);
-
 
 const maskShowContent = ref(false) // 控制弹出框
 const maskShowList = ref(false) // 控制弹出框
@@ -158,7 +141,7 @@ const updateResult = (data: object) => {
         for (let i = 0; i < result.length; i++) {
             // 找到id对应的内容，赋值
             if (result[i].id == queryId) {
-                result[i].projectContent = [...result[i].projectContent, data]
+                result[i] = data
                 localStorage.setItem('projects', JSON.stringify(result))
             }
         }
@@ -168,12 +151,16 @@ const updateResult = (data: object) => {
 // 添加二级内容
 const addListContent = () => {
     if (projectContent.listTitle != '') { // 标题不能为空
-        projectContent.id = v4(); // 分配id
-        projectContent.createTime = new Date().getTime(); // 分配常创建时间
-        updateResult(projectContent) // 提交的方法
+        let newContent = {  // 直接push会遇到一个坑就是深浅拷贝，push进去的是一个地址，都是指向一个数据，所以必须深拷贝
+            id: v4(),
+            createTime: new Date().getTime(),
+            listTitle: projectContent.listTitle,
+            listContent: [],
+            isShow: true,
+        }
+        projectContentList.value = [...projectContentList.value, newContent] // 将新的内容放入列表
         maskShowContent.value = false // 关闭编辑框
         projectContent.listTitle = '' // 将内容置空
-        projectDetail(queryId) // 重新获取数据
     }
 }
 
@@ -187,38 +174,34 @@ const showMask = (val: string) => {
 // 添加三级内容
 const addTargetContent = () => {
     if (listContent.targetText != '') {
-        listContent.id = v4()
-        const secondTitleList = list.value.projectContent
+        let newContent = {
+            id: v4(),
+            targetText: listContent.targetText,
+            isShow: false,
+        }
         // 将三级标题存入二级标题中
+        const secondTitleList = projectContentList.value
         if (secondTitleList != null) {
             for (let i = 0; i < secondTitleList.length; i++) {
-                console.log(thirdId);
                 if (secondTitleList[i].id == thirdId) {
-                    secondTitleList[i].listContent?.push(listContent)
-                }
-            }
-        }
-        // 将二级标题存入数据中并提交
-        let projects = localStorage.getItem('projects')
-        if (projects != null) {
-            const result = JSON.parse(projects)
-            for (let i = 0; i < result.length; i++) {
-                // 找到id对应的内容，赋值
-                if (result[i].id == queryId) {
-                    result[i].projectContent = secondTitleList
-                    localStorage.setItem('projects', JSON.stringify(result))
+                    secondTitleList[i].listContent?.push(newContent)
                 }
             }
         }
         maskShowList.value = false // 关闭编辑框
         listContent.targetText = '' // 将内容置空
-        projectDetail(queryId) // 重新获取数据
     }
 }
 
+// 保存内容并提交
+const updateAndExit = () => {
+    list.value.projectContent = projectContentList.value
+    console.log(list);
+    updateResult(list.value)
+    projectDetail(queryId)
+}
+
 const ddd = () => {
-    console.log(route.query);
-    projectDetail(route.query)
 
 }
 </script>

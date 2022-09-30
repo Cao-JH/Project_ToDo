@@ -1,6 +1,6 @@
 <template>
     <div class="projectContainer">
-        <n-card title="" hoverable v-for="item in listData" :key="item.id" @click="show(item.id)">
+        <n-card title="" hoverable v-for="item in listData" v-show="item.isShow" :key="item.id" @click="show(item.id)">
             <template #header>
                 <n-ellipsis style="max-width: 150px; font-size: 22px; font-weight: 600;" class="projectTitle">
                     {{item.projectTitle}}
@@ -11,6 +11,7 @@
                     {{item.projectDescription}}
                 </div>
                 <div class="needTodo">
+                    <button class="proDelete" @click="proDelete(item.id)">删除</button>
                     <span class="todoNum">32 </span>
                     <span>Need To Do</span>
                 </div>
@@ -85,18 +86,21 @@ onBeforeMount(() => {
  *     })
  *      直接赋值
  */
-// const listData: Project[] = reactive([])
 const listData = ref([] as Project[])
 
-const addData = reactive({
-    id: '',
-    projectTitle: '', // 项目名称
-    projectDescription: '', // 项目简介
-    projectContent: [],
-    creatTime: 0,
-    editTime: 0,
-    isShow: true
-} as Project)
+const addData = reactive({} as Project)
+
+// 控制删除
+const proDelete = (id: string) => {
+    for (let i = 0; i < listData.value.length; i++) {
+        // if (listData.value[i].id = id) {
+        // listData.value[i].isShow = false
+        // }
+    }
+}
+
+console.log(listData);
+
 
 // 打开对应的内容窗口
 const show = (id: string) => {
@@ -115,14 +119,20 @@ const projectPost = () => {
     console.log(addData, 'addData');
     if (addData.projectTitle != "") {
         // 获取数组
-        addData.id = v4()
-        addData.creatTime = new Date().getTime()
-        addData.editTime = new Date().getTime()
+        let newData = {
+            id: v4(),
+            creatTime: new Date().getTime(),
+            editTime: new Date().getTime(),
+            projectTitle: addData.projectTitle,
+            projectDescription: addData.projectDescription,
+            projectContent: [],
+            isShow: true,
+        }
         let projects = localStorage.getItem('projects')
         if (projects != null) {
             let result = JSON.parse(projects)
             // 将内容存入数组
-            result = [...result, addData]
+            result = [...result, newData]
             console.log(result);
             localStorage.setItem('projects', JSON.stringify(result))
         }
@@ -203,11 +213,17 @@ const closeAdd = () => {
         }
 
         .needTodo {
-            width: 90px;
             font-size: 12px;
             position: absolute;
             bottom: 55px;
-            right: 22px;
+            right: 23px;
+
+            .proDelete {
+                border: 0px;
+                display: none;
+                margin-right: 30px;
+                z-index: 99;
+            }
 
             .todoNum {
                 color: #e5383b;
@@ -232,6 +248,10 @@ const closeAdd = () => {
         box-shadow: #252422 10px 10px;
         transform: translateX(-5px) translateY(-5px);
         transition: ease-out 0.4s;
+
+        .proDelete {
+            display: inline-block;
+        }
     }
 
     .n-card {
