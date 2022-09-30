@@ -27,7 +27,7 @@
                                 <button class="targetDelete">删除</button>
                             </div>
                         </li>
-                        <li class="addContent" @click="maskShowList = false ? false : true ">
+                        <li class="addContent" @click="showMask(item.id)">
                             <svg-icon className="addIcon" iconName="add" />
                         </li>
                     </ul>
@@ -61,14 +61,14 @@
     <div class="mask" v-show="maskShowList">
         <div class="backmask" @click="closeAdd"></div>
         <div class="addForm">
-            <div class="addHeader">新增</div>
+            <div class="addHeader">再定个小小目标: </div>
             <div class="addBody">
                 <div class="inputBox">
-                    再定个小小目标: <input type="text" v-model="ListContent.targetText">
+                    <input type="text" v-model="listContent.targetText">
                 </div>
             </div>
             <div class="addFooter">
-                <button @click="">提交</button>
+                <button @click="addTargetContent">提交</button>
                 <button @click="closeAdd">取消</button>
             </div>
         </div>
@@ -82,6 +82,7 @@ import { NTime, NCollapse, NCollapseItem, NRadio } from 'naive-ui'
 import { useRoute } from 'vue-router';
 import { Project, ProjectContent, ListContent } from '@/types/project'
 import { v4 } from 'uuid'
+import { threadId } from 'worker_threads';
 
 
 // route实例
@@ -96,12 +97,13 @@ const projectDetail = (data: object) => {
         for (let i = 0; i < projectList.length; i++) {
             // 找到id对应的内容，赋值
             if (projectList[i].id == data) {
-                console.log(projectList[i]);
                 list.value = projectList[i]
             }
         }
     }
 }
+
+
 
 // 提取query中的id
 var queryId: any
@@ -119,7 +121,7 @@ const nowDate = new Date().getTime(); //获取到当前时间戳
 
 // 定义数据
 const list = ref({
-    id: 0,
+    id: '',
     projectTitle: '',
     projectDescription: '',
     projectContent: [],
@@ -127,6 +129,7 @@ const list = ref({
     editTime: 0,
     isShow: true
 } as Project)
+const projectContentList = reactive<any>([])
 const projectContent = reactive<ProjectContent>({
     id: newUuid.replace(/[-]/g, ''),
     listTitle: '',
@@ -134,54 +137,90 @@ const projectContent = reactive<ProjectContent>({
     isShow: true,
     createTime: nowDate
 })
-const ListContent = reactive<ListContent>({
+const listContent = reactive<ListContent>({
     id: newUuid.replace(/[-]/g, ''),
     targetText: '',
     isShow: true,
 })
-
-
-console.log(list);
 
 const saveText = () => {
     // 输入内容即可触发事件，可以使用保存方法，还要加节流
     console.log(1111);
 }
 
-// 控制弹出框
-const maskShowContent = ref(false)
-const maskShowList = ref(false)
+console.log(list);
 
-// 关闭弹出框
-const closeAdd = () => {
+
+const maskShowContent = ref(false) // 控制弹出框
+const maskShowList = ref(false) // 控制弹出框
+
+
+const closeAdd = () => { // 关闭弹出框
     maskShowContent.value = false
     maskShowList.value = false
 }
 
+// 将内容填入数据
+const updateResult = (data: object) => {
+    let projects = localStorage.getItem('projects') // 获取数据（因为是在localstorage中的数据，所以增删改查都需要执行获取并判断是否存在）
+    if (projects != null) {
+        const result = JSON.parse(projects)
+        for (let i = 0; i < result.length; i++) {
+            // 找到id对应的内容，赋值
+            if (result[i].id == queryId) {
+                projectContentList.push(data)
+                console.log(projectContentList);
+                result[i].projectContent.push(...projectContentList)
+                console.log(result[i]);
+                localStorage.setItem('projects', JSON.stringify(result))
+            }
+        }
+    }
+}
+
 // 添加二级内容
 const addListContent = () => {
-    console.log(1111);
-    console.log(projectContent);
+    // if (projectContent.listTitle != '') { // 标题不能为空
+    //     let projects = localStorage.getItem('projects') // 获取数据（因为是在localstorage中的数据，所以增删改查都需要执行获取并判断是否存在）
+    //     if (projects != null) {
+    //         const result = JSON.parse(projects)
+    //         console.log(result);
+    //         for (let i = 0; i < result.length; i++) {
+    //             // 找到id对应的内容，赋值
+    //             if (result[i].id == queryId) {
+    //                 result[i].projectContent.push(projectContent)
+    //                 localStorage.setItem('projects', JSON.stringify(result))
+    //             }
+    //         }
+    //     }
+    //     maskShowContent.value = false
+    //     projectContent.listTitle = ''
+    //     projectDetail(queryId)
+    // }
+    updateResult(projectContent)
+}
+
+let thirdId: string
+// 三级标题添加框
+const showMask = (val: string) => {
+    maskShowList.value = true;
+    thirdId = val
+}
+// 获取当前三级标题所在的位置id
 
 
-    if (projectContent.listTitle != '') { // 标题不能为空
-        let projects = localStorage.getItem('projects')
-        if (projects != null) {
-            const result = JSON.parse(projects)
-            console.log(result);
-            for (let i = 0; i < result.length; i++) {
-                // 找到id对应的内容，赋值
-                if (result[i].id == queryId) {
-                    result[i].projectContent.push(projectContent)
-                    localStorage.setItem('projects', JSON.stringify(result))
+// 添加三级内容
+const addTargetContent = () => {
+    if (listContent.targetText != '') {
+        const secondTitleList = list.value.projectContent
+        if (secondTitleList != null) {
+            for (let i = 0; i < secondTitleList.length; i++) {
+                if (secondTitleList[i].id = thirdId) {
+                    secondTitleList[i].listContent?.push(listContent)
                 }
             }
         }
-        maskShowContent.value = false
-        projectContent.listTitle = ''
-        projectDetail(queryId)
     }
-
 }
 
 const ddd = () => {
