@@ -10,7 +10,7 @@
         </div>
         <div class="description">
             <!-- 模拟textarea，且可以自适应高度 -->
-            <div contenteditable="true" class="textarea" @input="saveText">
+            <div contenteditable="true" class="textarea" @input="saveText($event)">
                 {{list.projectDescription}}
             </div>
         </div>
@@ -82,8 +82,6 @@ import { NTime, NCollapse, NCollapseItem, NRadio } from 'naive-ui'
 import { useRoute } from 'vue-router';
 import { Project, ProjectContent, ListContent } from '@/types/project'
 import { v4 } from 'uuid'
-import { threadId } from 'worker_threads';
-
 
 // route实例
 const route = useRoute()
@@ -103,8 +101,6 @@ const projectDetail = (data: object) => {
     }
 }
 
-
-
 // 提取query中的id
 var queryId: any
 for (let id in route.query) {
@@ -114,10 +110,6 @@ for (let id in route.query) {
 onBeforeMount(() => {
     projectDetail(queryId)
 })
-
-
-let newUuid = v4(); // 定义id值
-const nowDate = new Date().getTime(); //获取到当前时间戳
 
 // 定义数据
 const list = ref({
@@ -129,23 +121,22 @@ const list = ref({
     editTime: 0,
     isShow: true
 } as Project)
-const projectContentList = reactive<any>([])
 const projectContent = reactive<ProjectContent>({
-    id: newUuid.replace(/[-]/g, ''),
+    id: '',
     listTitle: '',
     listContent: [],
     isShow: true,
-    createTime: nowDate
+    createTime: 0
 })
 const listContent = reactive<ListContent>({
-    id: newUuid.replace(/[-]/g, ''),
+    id: '',
     targetText: '',
     isShow: true,
 })
 
-const saveText = () => {
+const saveText = (e: any) => {
     // 输入内容即可触发事件，可以使用保存方法，还要加节流
-    console.log(1111);
+    list.value.projectDescription = e.target.innerText
 }
 
 console.log(list);
@@ -153,7 +144,6 @@ console.log(list);
 
 const maskShowContent = ref(false) // 控制弹出框
 const maskShowList = ref(false) // 控制弹出框
-
 
 const closeAdd = () => { // 关闭弹出框
     maskShowContent.value = false
@@ -168,10 +158,7 @@ const updateResult = (data: object) => {
         for (let i = 0; i < result.length; i++) {
             // 找到id对应的内容，赋值
             if (result[i].id == queryId) {
-                projectContentList.push(data)
-                console.log(projectContentList);
-                result[i].projectContent.push(...projectContentList)
-                console.log(result[i]);
+                result[i].projectContent = [...result[i].projectContent, data]
                 localStorage.setItem('projects', JSON.stringify(result))
             }
         }
@@ -180,24 +167,14 @@ const updateResult = (data: object) => {
 
 // 添加二级内容
 const addListContent = () => {
-    // if (projectContent.listTitle != '') { // 标题不能为空
-    //     let projects = localStorage.getItem('projects') // 获取数据（因为是在localstorage中的数据，所以增删改查都需要执行获取并判断是否存在）
-    //     if (projects != null) {
-    //         const result = JSON.parse(projects)
-    //         console.log(result);
-    //         for (let i = 0; i < result.length; i++) {
-    //             // 找到id对应的内容，赋值
-    //             if (result[i].id == queryId) {
-    //                 result[i].projectContent.push(projectContent)
-    //                 localStorage.setItem('projects', JSON.stringify(result))
-    //             }
-    //         }
-    //     }
-    //     maskShowContent.value = false
-    //     projectContent.listTitle = ''
-    //     projectDetail(queryId)
-    // }
-    updateResult(projectContent)
+    if (projectContent.listTitle != '') { // 标题不能为空
+        projectContent.id = v4(); // 分配id
+        projectContent.createTime = new Date().getTime(); // 分配常创建时间
+        updateResult(projectContent) // 提交的方法
+        maskShowContent.value = false // 关闭编辑框
+        projectContent.listTitle = '' // 将内容置空
+        projectDetail(queryId) // 重新获取数据
+    }
 }
 
 let thirdId: string
@@ -206,20 +183,36 @@ const showMask = (val: string) => {
     maskShowList.value = true;
     thirdId = val
 }
-// 获取当前三级标题所在的位置id
-
 
 // 添加三级内容
 const addTargetContent = () => {
     if (listContent.targetText != '') {
+        listContent.id = v4()
         const secondTitleList = list.value.projectContent
+        // 将三级标题存入二级标题中
         if (secondTitleList != null) {
             for (let i = 0; i < secondTitleList.length; i++) {
-                if (secondTitleList[i].id = thirdId) {
+                console.log(thirdId);
+                if (secondTitleList[i].id == thirdId) {
                     secondTitleList[i].listContent?.push(listContent)
                 }
             }
         }
+        // 将二级标题存入数据中并提交
+        let projects = localStorage.getItem('projects')
+        if (projects != null) {
+            const result = JSON.parse(projects)
+            for (let i = 0; i < result.length; i++) {
+                // 找到id对应的内容，赋值
+                if (result[i].id == queryId) {
+                    result[i].projectContent = secondTitleList
+                    localStorage.setItem('projects', JSON.stringify(result))
+                }
+            }
+        }
+        maskShowList.value = false // 关闭编辑框
+        listContent.targetText = '' // 将内容置空
+        projectDetail(queryId) // 重新获取数据
     }
 }
 

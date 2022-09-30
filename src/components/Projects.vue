@@ -32,13 +32,11 @@
             <div class="addBody">
                 <div class="inputBox">
                     项目名: <input type="text" v-model="addData.projectTitle">
-                </div>
-                <div class="textareaBox" contenteditable="true" @input="saveText($event)">
-
+                    项目介绍：<input type="text" v-model="addData.projectDescription">
                 </div>
             </div>
             <div class="addFooter">
-                <button @click="projectPost">提交</button>
+                <button @click="projectPost">提交</button> <br />
                 <button @click="closeAdd">取消</button>
             </div>
         </div>
@@ -64,7 +62,6 @@ const getProjectData = () => {
         localStorage.setItem('projects', JSON.stringify([] as Project[]))
     } else {
         // 反之，提取值
-        console.log(result);
         listData.value = JSON.parse(result)
     }
 }
@@ -91,29 +88,18 @@ onBeforeMount(() => {
 // const listData: Project[] = reactive([])
 const listData = ref([] as Project[])
 
-var nowDate = new Date().getTime(); //获取到当前时间戳
-// 定义id值
-let newUuid = v4()
-
-const addData = reactive<Project>({
-    id: newUuid.replace(/[-]/g, ''),
+const addData = reactive({
+    id: '',
     projectTitle: '', // 项目名称
     projectDescription: '', // 项目简介
     projectContent: [],
-    creatTime: nowDate,
-    editTime: nowDate,
+    creatTime: 0,
+    editTime: 0,
     isShow: true
-})
-
-console.log(addData);
-
-// 输入完时将结果赋值给项目描述
-const saveText = (e: any) => {
-    addData.projectDescription = e.target.innerText
-}
+} as Project)
 
 // 打开对应的内容窗口
-const show = (id: number) => {
+const show = (id: string) => {
     ipcRenderer.send('openNewWin', id)
 }
 
@@ -129,6 +115,9 @@ const projectPost = () => {
     console.log(addData, 'addData');
     if (addData.projectTitle != "") {
         // 获取数组
+        addData.id = v4()
+        addData.creatTime = new Date().getTime()
+        addData.editTime = new Date().getTime()
         let projects = localStorage.getItem('projects')
         if (projects != null) {
             let result = JSON.parse(projects)
