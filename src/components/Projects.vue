@@ -11,7 +11,7 @@
                     {{item.projectDescription}}
                 </div>
                 <div class="needTodo">
-                    <button class="proDelete" @click="proDelete(item.id)">删除</button>
+                    <button class="proDelete" @click.stop="proDelete(item.id)">删除</button>
                     <span class="todoNum">32 </span>
                     <span>Need To Do</span>
                 </div>
@@ -47,9 +47,7 @@
 <script setup lang="ts">
 import { ref, onBeforeMount, reactive } from 'vue'
 import { NCard, NEllipsis, NTime } from 'naive-ui'
-// 引入type
 import { Project } from '@/types/project'
-// 引入uuid
 import { v4 } from 'uuid'
 // 引入ipc通信
 const { ipcRenderer } = window.require("electron");
@@ -58,13 +56,8 @@ const { ipcRenderer } = window.require("electron");
 const getProjectData = () => {
     // 读取本次存储，判断是否有需要的内容
     let result = localStorage.getItem('projects')
-    if (result == null) {
-        // 如果没有，则创建一个新的
-        localStorage.setItem('projects', JSON.stringify([] as Project[]))
-    } else {
-        // 反之，提取值
-        listData.value = JSON.parse(result)
-    }
+    // 如果没有，则创建一个新的,反之，提取值
+    result ? listData.value = JSON.parse(result) : localStorage.setItem('projects', JSON.stringify([] as Project[]))
 }
 
 // 内容挂载时
@@ -87,20 +80,16 @@ onBeforeMount(() => {
  *      直接赋值
  */
 const listData = ref([] as Project[])
-
+// 要添加的新内容
 const addData = reactive({} as Project)
 
 // 控制删除
 const proDelete = (id: string) => {
-    for (let i = 0; i < listData.value.length; i++) {
-        // if (listData.value[i].id = id) {
-        // listData.value[i].isShow = false
-        // }
-    }
+    let deleteTarget = listData.value.find(e => e.id == id);
+    deleteTarget ? deleteTarget.isShow = false : ''
+    updateData(listData.value); // 提交新的结果
+    getProjectData(); // 重新获取数据
 }
-
-console.log(listData);
-
 
 // 打开对应的内容窗口
 const show = (id: string) => {
@@ -114,10 +103,21 @@ const openAdd = () => {
     maskShow.value = true
 }
 
+// 提交数据的方法
+const updateData = (data: Array<Project>) => {
+    let projects = localStorage.getItem('projects')
+    if (projects != null) {
+        let result = JSON.parse(projects)
+        result = data // 将内容存入数组
+        localStorage.setItem('projects', JSON.stringify(result))
+    }
+}
+
 // 提交内容
 const projectPost = () => {
     console.log(addData, 'addData');
-    if (addData.projectTitle != "") {
+    console.log(addData.projectTitle);
+    if (addData.projectTitle != undefined) {
         // 获取数组
         let newData = {
             id: v4(),
@@ -128,18 +128,15 @@ const projectPost = () => {
             projectContent: [],
             isShow: true,
         }
-        let projects = localStorage.getItem('projects')
-        if (projects != null) {
-            let result = JSON.parse(projects)
-            // 将内容存入数组
-            result = [...result, newData]
-            console.log(result);
-            localStorage.setItem('projects', JSON.stringify(result))
-        }
-        getProjectData()
+        listData.value = [...listData.value, newData]; // 将新的对象置入数组
+        updateData(listData.value); // 提交新的结果
+        getProjectData(); // 重新获取数据
         addData.projectTitle = '';// 项目名称置空
         addData.projectDescription = ''; // 项目简介置空
-        maskShow.value = false
+        maskShow.value = false; // 关闭窗口
+    } else {
+        console.log('不能为空');
+
     }
 }
 
@@ -147,7 +144,6 @@ const projectPost = () => {
 const closeAdd = () => {
     maskShow.value = false
 }
-
 </script>
 
 <style>

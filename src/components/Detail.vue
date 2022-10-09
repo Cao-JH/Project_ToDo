@@ -4,8 +4,8 @@
         <div class="header">
             <div class="projectTitle">{{list.projectTitle}}</div>
             <div class="btn">
-                <button class="complete" @click="updateAndExit">完成</button>
-                <button class="delete" @click="ddd">删除</button>
+                <button class="complete" @click="updateAndExit">保存</button>
+                <button class="delete" @click="backHome">返回</button>
             </div>
         </div>
         <div class="description">
@@ -82,6 +82,7 @@ import { NTime, NCollapse, NCollapseItem, NRadio } from 'naive-ui'
 import { useRoute } from 'vue-router';
 import { Project, ProjectContent, ListContent } from '@/types/project'
 import { v4 } from 'uuid'
+const { ipcRenderer } = window.require("electron");
 
 // route实例
 const route = useRoute()
@@ -102,7 +103,7 @@ const projectDetail = (data: object) => {
 }
 
 // 提取query中的id
-var queryId: any
+let queryId: any
 for (let id in route.query) {
     queryId = route.query[id]
 }
@@ -150,7 +151,7 @@ const updateResult = (data: object) => {
 
 // 添加二级内容
 const addListContent = () => {
-    if (projectContent.listTitle != '') { // 标题不能为空
+    if (projectContent.listTitle != undefined) { // 标题不能为空
         let newContent = {  // 直接push会遇到一个坑就是深浅拷贝，push进去的是一个地址，都是指向一个数据，所以必须深拷贝
             id: v4(),
             createTime: new Date().getTime(),
@@ -201,7 +202,10 @@ const updateAndExit = () => {
     projectDetail(queryId)
 }
 
-const ddd = () => {
+// 关闭页面返回
+const backHome = () => {
+    ipcRenderer.send('closed')
+    console.log(11);
 
 }
 </script>

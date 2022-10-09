@@ -47,8 +47,8 @@ function createWindow() {
     ipcMain.on('openNewWin', (e, res) => openNewWin(res))
 
     // 新窗口函数
-    function openNewWin(id) {
-        let newWin = new BrowserWindow({
+    async function openNewWin(id) {
+        const newWin = await new BrowserWindow({
             width: 800,
             height: 800,
             // parent: mainWindow, // 主窗口
@@ -56,11 +56,17 @@ function createWindow() {
                 nodeIntegration: true,
                 contextIsolation: false
             },
-            // frame: false,   // 去掉顶部导航  去掉关闭按钮  最大化最小化按钮
+            frame: false,   // 去掉顶部导航  去掉关闭按钮  最大化最小化按钮
         })
         // loadURL优点坑,还是选择使用path.join方法拼接请求地址
         newWin.loadURL(path.join(winURL, `detail?id=${id}`))
-        // newWin.on('closed', () => { newWin.close() })
+        ipcMain.on('closed', async () => {
+            try {
+                await newWin.close()
+            } catch (e) {
+                console.log(e);
+            }
+        })
     }
 }
 
